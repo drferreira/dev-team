@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>dev-team-persistence</artifactId>
+	<packaging>ejb</packaging>
+
+	<name>dev-team-persistence</name>
+
+	<properties>
+		<hibernate.hbm2ddl.auto>validate</hibernate.hbm2ddl.auto>
+		<hibernate.hbm2ddl.import_files></hibernate.hbm2ddl.import_files>
+		<excluded.sql.files>**/*.sql</excluded.sql.files>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>4.3.5.Final</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.tutty</groupId>
+			<artifactId>dev-team-model</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>ejb</type>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-ejb-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<ejbVersion>3.1</ejbVersion>
+				</configuration>
+			</plugin>
+		</plugins>
+		<resources>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+				<excludes>
+					<exclude>filter/*.*</exclude>
+					<exclude>${excluded.sql.files}</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<filtering>true</filtering>
+				<directory>${basedir}/src/main/resources/filter</directory>
+				<targetPath>META-INF</targetPath>
+				<includes>
+					<include>persistence.xml</include>
+				</includes>
+				<excludes>
+					<exclude>beans.xml</exclude>
+					<exclude>*.sql</exclude>
+				</excludes>
+			</resource>
+		</resources>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>create-database</id>
+			<properties>
+				<hibernate.hbm2ddl.auto>create</hibernate.hbm2ddl.auto>
+				<hibernate.hbm2ddl.import_files>
+					/META-INF/01_setup_database.sql,
+				</hibernate.hbm2ddl.import_files>
+				<excluded.sql.files></excluded.sql.files>
+			</properties>
+		</profile>
+	</profiles>
+
+	<parent>
+		<groupId>org.tutty</groupId>
+		<artifactId>dev-team-root</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+</project>
